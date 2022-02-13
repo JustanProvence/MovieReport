@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'edu.sc.seis.launch4j' version '2.5.1'
+    id 'shadow'
+}
+
+group 'com.jp'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.8'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+launch4j {
+    mainClassName = 'com.jp.Main'
+    outfile = 'MovieReport.exe'
+}
