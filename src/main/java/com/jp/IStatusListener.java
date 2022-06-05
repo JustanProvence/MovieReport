@@ -1,6 +1,6 @@
 package com.jp;
 
 public interface IStatusListener {
-
-     void statusUpdated(int totalNumberMovies, String newStatus);
+     void maxUpdated(int totalNumberMovies);
+     void progressUpdated(int progress);
 }

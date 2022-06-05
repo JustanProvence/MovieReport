@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Status {
-
     private int totalNumberOfMovies = 0;
-    private String textStatus = "...";
-    private List<IStatusListener> listeners = new ArrayList<>();
+    private int progress = 0;
+    private final List<IStatusListener> listeners = new ArrayList<>();
 
     public Status() {
 
@@ -23,21 +22,23 @@ public class Status {
 
     public void setTotalNumberOfMovies(int totalNumberOfMovies) {
         this.totalNumberOfMovies = totalNumberOfMovies;
-        updateListeners();
+        for(IStatusListener listener : listeners) {
+            listener.maxUpdated(totalNumberOfMovies);
+        }
     }
 
-    public String getTextStatus() {
-        return textStatus;
+    public int getProgress() {
+        return progress;
     }
 
-    public void setTextStatus(String textStatus) {
-        this.textStatus = textStatus;
-        updateListeners();
+    public void setProgress(int progress) {
+        this.progress = progress;
+        for(IStatusListener listener : listeners) {
+            listener.progressUpdated(progress);
+        }
     }
 
     private void updateListeners() {
-        for(IStatusListener listener : listeners) {
-            listener.statusUpdated(this.totalNumberOfMovies , this.textStatus);
-        }
+
     }
 }

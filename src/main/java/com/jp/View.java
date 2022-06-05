@@ -2,58 +2,50 @@ package com.jp;
 
 
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
-import java.io.File;
-import java.util.List;
+import java.awt.*;
+import java.util.logging.Logger;
 
 public class View extends JFrame {
 
-    private JTextArea statusText;
-    private IStatusListener listener;
+    private Logger logger = Logger.getLogger("View");
+    private JProgressBar bar;
+    private JLabel status;
 
     public View() {
-        super("Running Report...");
+        super("Movie Report Progress");
 
-        super.setSize(640, 500);
+        super.setSize(250, 100);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         setupComponent();
     }
 
     public void setStatus(String status) {
-        statusText.setText(String.format("%s%n%s", statusText.getText(), status));
+        this.status.setText(status);
+    }
+
+    public void setProgressMax(int max) {
+        bar.setMaximum(max);
+    }
+
+    public void setProgress(int progress) {
+        bar.setValue(progress);
     }
 
     private void setupComponent() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        statusText = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(statusText);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5,5));
 
-        mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        bar = new JProgressBar();
+        bar.setValue(0);
+        bar.setStringPainted(true);
+
+        status = new JLabel("...");
+
+        mainPanel.add(bar, BorderLayout.NORTH);
+        mainPanel.add(status, BorderLayout.SOUTH);
         getContentPane().add(mainPanel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    public void runReport(File root) {
-        Status status = new Status();
-        status.addListener(new StatusListener());
-        MovieReport report = new MovieReport(status, this);
-        List<Movie> movies = report.runReport(root);
-        report.createCSV(root, movies);
-    }
-
-    private class StatusListener implements IStatusListener {
-
-        @Override
-        public void statusUpdated(int movieCount, String newStatus) {
-            setStatus(newStatus);
-        }
     }
 }

@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'edu.sc.seis.launch4j' version '2.5.1'
-    id 'shadow'
 }
 
 group 'com.jp'

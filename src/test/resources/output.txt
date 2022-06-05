@@ -1,0 +1,2 @@
+Jun 05, 2022 4:06:24 PM com.jp.Main lambda$showView$0
+INFO: Running report on C:\Users\Justan\MovieReport\src\test\resources\video

@@ -9,47 +9,33 @@ import java.util.List;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVFormat;
 
-import javax.swing.*;
-
 public class MovieReport {
 
     private Status status;
-    private JFrame parentFrame;
 
-    public MovieReport(Status status, JFrame parentFrame) {
+    public MovieReport(Status status) {
         this.status = status;
-        this.parentFrame = parentFrame;
     }
 
     public List<Movie> runReport(File parent) {
-        status.setTextStatus("Starting Search...");
         List<Movie> movies = new ArrayList<>();
         if(parent.isDirectory()) {
             assessChildren(parent, parent, movies);
         }
         status.setTotalNumberOfMovies(movies.size());
-        status.setTextStatus("Found " + movies.size() + " movies");
         return movies;
     }
 
     public boolean createCSV(File location, List<Movie> movies) {
-        status.setTextStatus("Creating CSV.");
         List<String> header = parseHeader(movies);
-        status.setTextStatus("Header " + header.toString());
-
         List<List<String>> values = new ArrayList<>();
 
-        status.setTextStatus("Creating csv lines");
-        int count = 0;
-        int total = movies.size();
         for(Movie movie : movies) {
            List<String> value = new ArrayList<>();
            value.add(movie.getName());
            value.add(Integer.toString(movie.getYear()));
            value.addAll(movie.getLocationFromRoot());
            values.add(value);
-           count++;
-           status.setTextStatus("Created " + count + " of " + total);
         }
 
         try {
@@ -101,26 +87,16 @@ public class MovieReport {
     }
 
     private boolean createCSVFile(File location, List<String> header, List<List<String>> values) throws IOException {
-        status.setTextStatus("creating file " + location.getAbsolutePath() + " " + location.getParentFile().canWrite());
-
-        for(List<String> value : values) {
-            status.setTextStatus(value.toString());
-        }
-
         FileWriter out = new FileWriter(location);
         try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
             printer.printRecord(header);
             int count = 0;
-            int total = values.size();
-            status.setTextStatus("Printing " + total + " movies.");
             for(List<String> value : values) {
                 printer.printRecord(value);
                 count++;
-                status.setTextStatus("Printed " + count + " of " + total);
+                status.setProgress(count);
             }
-            status.setTextStatus("Done");
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(parentFrame, ex.getMessage());
             return false;
         }
         return true;
